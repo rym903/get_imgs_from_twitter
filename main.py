@@ -33,7 +33,7 @@ def get_img_path_and_name_from_url(url, tweet, imgs_cnt):
     #print(img_url)
     ext = re.search("\.([^\.]*)$", img_url)
     ext = ext.groups(1)[0]
-    img_name = "./images/" + str(tweet[0]) + "-" + tweet[3] + "." + ext
+    img_name = str(tweet[0]) + "-" + tweet[3] + "." + ext
     #print("img_name = {}".format(img_name))
     return img_url, img_name
 
@@ -52,7 +52,7 @@ tweet_data = []
 account_name = "xnQyi504ZOpbrsy"
 account_name = "creantics"
 for tweet in \
-    api.user_timeline(screen_name=account_name, count=10, tweet_mode="extended"):
+    api.user_timeline(screen_name=account_name, count=200, tweet_mode="extended"):
 #    tweepy.Cursor(api.user_timeline,screen_name = account_name,exclude_replies = True).items():
 #        status = api.get_status(tweet.id)
         tweet_data.append([
@@ -78,7 +78,7 @@ for tweet in \
 imgs_cnt = 0
 for tweet in tweet_data:
     tweet_honbun = tweet[2]
-    match = re.search("(https[^\s$]*)", tweet_honbun)
+    match = re.search("(https://t\.co/.{10})", tweet_honbun)
     if match:
         urls = match.groups(1)
         for url in urls:
