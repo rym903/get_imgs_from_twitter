@@ -1,0 +1,5 @@
+cron:
+- description: "RTしたツイートから画像をダウンロード"
+  url: /apps/get_imgs_from_twitter;
+  schedule: every day 00:00;
+  target: twitter;

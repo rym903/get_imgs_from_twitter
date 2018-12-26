@@ -33,7 +33,7 @@ def get_img_path_and_name_from_url(url, tweet, imgs_cnt):
     #print(img_url)
     ext = re.search("\.([^\.]*)$", img_url)
     ext = ext.groups(1)[0]
-    img_name = "./images/" + str(tweet[0]) + "-" + re.sub("\s", "-", str(tweet[1])) + "-" + str(imgs_cnt) + "." + ext
+    img_name = "./images/" + str(tweet[0]) + "-" + re.sub("\s", "-", tweet[3] + "-" + "." + ext
     #print("img_name = {}".format(img_name))
     return img_url, img_name
 
@@ -59,6 +59,7 @@ for tweet in \
         tweet.id,
         tweet.created_at,
         tweet.full_text.replace('\n',''),
+        tweet.screen_name
 #        tweet.favorite_count,
 #        status.text,
 #        tweet.retweet_count
