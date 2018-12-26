@@ -7,7 +7,7 @@ import lxml.html
 #from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from urllib.request import urlopen
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 
 import storage
 
@@ -59,7 +59,7 @@ for tweet in \
         tweet.id,
         tweet.created_at,
         tweet.full_text.replace('\n',''),
-        tweet.screen_name
+        tweet.user.screen_name
 #        tweet.favorite_count,
 #        status.text,
 #        tweet.retweet_count
@@ -88,7 +88,7 @@ for tweet in tweet_data:
                 if img_url != "":
                     download_image(img_url, img_name)
                     imgs_cnt += 1
-            except UnicodeEncodeError:
+            except (UnicodeEncodeError, HTTPError):
                 continue
 
 print("imgs_cnt = {}".format(imgs_cnt))
