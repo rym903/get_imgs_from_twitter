@@ -11,7 +11,7 @@ from urllib.error import HTTPError, URLError
 
 import storage
 
-from bq import drop_exist_id
+from bq import drop_exist_id, insert_to_bq
 
 def download_image(url, dst_path):
     try:
@@ -81,6 +81,7 @@ tweet_data = drop_exist_id(tweet_data)
 
 
 #個々のツイートからimg_urlを取得
+img_nums = []
 imgs_cnt = 0
 for tweet in tweet_data:
     tweet_honbun = tweet[2]
@@ -98,5 +99,8 @@ for tweet in tweet_data:
                     imgs_cnt += 1
             except (UnicodeEncodeError, HTTPError):
                 continue
+        img_nums.append(seq_)
+
+insert_to_bq(tweet_data, img_nums)
 
 print("imgs_cnt = {}".format(imgs_cnt))
