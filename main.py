@@ -11,6 +11,8 @@ from urllib.error import HTTPError, URLError
 
 import storage
 
+from bq import drop_exist_id
+
 def download_image(url, dst_path):
     try:
         data = urlopen(url)
@@ -20,7 +22,7 @@ def download_image(url, dst_path):
     except URLError as e:
         print(e)
 
-def get_img_path_and_name_from_url(url, tweet, imgs_cnt): 
+def get_img_path_and_name_from_url(url, tweet, seq_): 
     #url = match.groups(1)[0]
     #print("url = {}".format(url))
     tree = lxml.html.parse(urlopen(url))
@@ -33,7 +35,7 @@ def get_img_path_and_name_from_url(url, tweet, imgs_cnt):
     #print(img_url)
     ext = re.search("\.([^\.]*)$", img_url)
     ext = ext.groups(1)[0]
-    img_name = str(tweet[0]) + "-" + tweet[3] + "." + ext
+    img_name = str(tweet[0]) + "-" + tweet[3] + "-" + str(seq_) + "." + ext
     #print("img_name = {}".format(img_name))
     return img_url, img_name
 
@@ -74,6 +76,10 @@ for tweet in \
 #    writer.writerows(tweet_data)
 #pass
 
+#BQにないidを取り出す
+tweet_data = drop_exist_id(tweet_data)
+
+
 #個々のツイートからimg_urlを取得
 imgs_cnt = 0
 for tweet in tweet_data:
@@ -81,12 +87,14 @@ for tweet in tweet_data:
     match = re.search("(https://t\.co/.{10})", tweet_honbun)
     if match:
         urls = match.groups(1)
+        seq_ = 0
         for url in urls:
             print("url={}".format(url))
             try:
-                img_url, img_name = get_img_path_and_name_from_url(url, tweet, imgs_cnt)
+                img_url, img_name = get_img_path_and_name_from_url(url, tweet, seq_)
                 if img_url != "":
                     download_image(img_url, img_name)
+                    seq_ += 1
                     imgs_cnt += 1
             except (UnicodeEncodeError, HTTPError):
                 continue
